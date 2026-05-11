@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", role: "customer" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -88,6 +88,20 @@ function Register() {
             placeholder="you@example.com"
             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           />
+        </div>
+
+        <div className="mb-4">
+          <label className="mb-1 block text-sm font-medium text-gray-700">Role</label>
+          <select
+            name="role"
+            value={form.role}
+            onChange={handleChange}
+            className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          >
+            <option value="customer">Customer</option>
+            <option value="staff">Staff</option>
+            <option value="admin">Admin</option>
+          </select>
         </div>
 
         <div className="mb-6">

@@ -8,7 +8,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
-    protected $fillable = ['user_id', 'total_price', 'status', 'payment_method'];
+    protected $fillable = [
+        'user_id',
+        'total_price',
+        'status',
+        'payment_method',
+        'payment_status',
+        'khqr_code',
+        'transaction_id',
+        'name',
+        'phone',
+        'address',
+        'notes',
+    ];
 
     public function user(): BelongsTo
     {
@@ -18,5 +30,10 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
     }
 }

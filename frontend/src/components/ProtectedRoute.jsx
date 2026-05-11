@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function ProtectedRoute() {
-  const { token, loading } = useAuth();
+  const { user, token, loading } = useAuth();
 
   if (loading) {
     return (
@@ -12,7 +12,15 @@ function ProtectedRoute() {
     );
   }
 
-  return token ? <Outlet /> : <Navigate to="/login" replace />;
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (user?.role === "customer") {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Outlet />;
 }
 
 export default ProtectedRoute;

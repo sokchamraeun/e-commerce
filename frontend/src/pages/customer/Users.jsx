@@ -135,6 +135,7 @@ function Users() {
                 <th className="p-4 text-left">ID</th>
                 <th className="p-4 text-left">Name</th>
                 <th className="p-4 text-left">Email</th>
+                <th className="p-4 text-left">Role</th>
                 <th className="p-4 text-center">Actions</th>
               </tr>
             </thead>
@@ -144,6 +145,17 @@ function Users() {
                   <td className="p-4">{user.id}</td>
                   <td className="p-4 font-medium text-gray-700">{user.name}</td>
                   <td className="p-4 text-gray-600">{user.email}</td>
+                  <td className="p-4">
+                    <span className={`rounded-full px-2 py-1 text-xs font-medium ${
+                      user.role === "admin"
+                        ? "bg-purple-100 text-purple-700"
+                        : user.role === "staff"
+                        ? "bg-orange-100 text-orange-700"
+                        : "bg-blue-100 text-blue-700"
+                    }`}>
+                      {user.role || "customer"}
+                    </span>
+                  </td>
                   <td className="p-4">
                     <div className="flex justify-center gap-2">
                       <button
@@ -188,6 +200,7 @@ function UserFormModal({ mode, user, onClose, onSubmit }) {
     name: user?.name || "",
     email: user?.email || "",
     password: "",
+    role: user?.role || "customer",
   });
   const [submitting, setSubmitting] = useState(false);
   const [err, setErr] = useState("");
@@ -255,6 +268,20 @@ function UserFormModal({ mode, user, onClose, onSubmit }) {
             onChange={handleChange}
             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           />
+        </div>
+
+        <div className="mb-4">
+          <label className="mb-1 block text-sm font-medium text-gray-700">Role</label>
+          <select
+            name="role"
+            value={form.role}
+            onChange={handleChange}
+            className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          >
+            <option value="customer">Customer</option>
+            <option value="staff">Staff</option>
+            <option value="admin">Admin</option>
+          </select>
         </div>
 
         <div className="mb-6">

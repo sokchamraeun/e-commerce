@@ -75,6 +75,10 @@ function Navbar({ overlay }) {
         <Link to="/service" className={linkClass}>
           Service
         </Link>
+
+        <Link to="/history" className={linkClass}>
+          History
+        </Link>
       </div>
 
       {/* Right Side */}

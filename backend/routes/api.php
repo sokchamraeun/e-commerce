@@ -30,6 +30,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::post('/orders', [OrderController::class, 'store']);
+    Route::post('/orders/{id}/pay', [OrderController::class, 'pay']);
+    Route::get('/orders/{id}/payment-status', [OrderController::class, 'paymentStatus']);
+    Route::post('/orders/{id}/regenerate-qr', [OrderController::class, 'regenerateQr']);
+
+    Route::get('/admin/orders', [OrderController::class, 'allOrders']);
+    Route::get('/admin/orders/stats', [OrderController::class, 'stats']);
+    Route::put('/admin/orders/{id}/status', [OrderController::class, 'updateStatus']);
 });
 
 Route::get('/users', [UserController::class, 'index']);

@@ -25,8 +25,12 @@ function Login() {
     setLoading(true);
 
     try {
-      await login(form.email, form.password);
-      navigate("/admin", { replace: true });
+      const user = await login(form.email, form.password);
+      if (user.role === "admin" || user.role === "staff") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
     } catch (err) {
       setError(err.message);
     } finally {

@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function GuestRoute() {
-  const { token, loading } = useAuth();
+  const { user, token, loading } = useAuth();
 
   if (loading) {
     return (
@@ -12,7 +12,13 @@ function GuestRoute() {
     );
   }
 
-  return token ? <Navigate to="/admin" replace /> : <Outlet />;
+  if (token) {
+    return user?.role === "customer"
+      ? <Navigate to="/" replace />
+      : <Navigate to="/admin" replace />;
+  }
+
+  return <Outlet />;
 }
 
 export default GuestRoute;

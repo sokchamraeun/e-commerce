@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { CartDrawerProvider } from "./context/CartDrawerContext";
+import { CartProvider } from "./context/CartContext";
+import CartSidebar from "./components/CartSidebar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 import AdminLayout from "./layouts/AdminLayout";
@@ -8,6 +11,7 @@ import Products from "./pages/admin/Products";
 import Users from "./pages/customer/Users";
 import Home from "./pages/Home";
 import Menu from "./pages/customer/Menu";
+import Cart from "./pages/customer/Cart";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
@@ -15,6 +19,9 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <CartDrawerProvider>
+        <CartProvider>
+        <CartSidebar />
         <Routes>
           <Route element={<GuestRoute />}>
             <Route path="/login" element={<Login />} />
@@ -22,6 +29,7 @@ function App() {
           </Route>
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
+          <Route path="/cart" element={<Cart />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<Dashboard />} />
@@ -30,6 +38,8 @@ function App() {
             </Route>
           </Route>
         </Routes>
+        </CartProvider>
+        </CartDrawerProvider>
       </AuthProvider>
     </BrowserRouter>
   );

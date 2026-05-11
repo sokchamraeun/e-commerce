@@ -1,10 +1,34 @@
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
+import { useCartDrawer } from "../context/CartDrawerContext";
 import logo from "../assets/react.svg";
 
 function Navbar({ overlay }) {
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
+  const { cartCount, setCartCount, refreshKey } = useCart();
+  const { toggle } = useCartDrawer();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+      setCartCount(0);
+      return;
+    }
+    fetch("http://127.0.0.1:8000/api/cart", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then((data) => {
+        const count = data.items?.reduce((s, i) => s + i.quantity, 0) ?? 0;
+        setCartCount(count);
+      })
+      .catch(() => setCartCount(0));
+  }, [token, refreshKey]);
 
   const handleLogout = async () => {
     await logout();
@@ -56,7 +80,21 @@ function Navbar({ overlay }) {
       {/* Right Side */}
       <div className="flex items-center gap-4">
         {/* Cart */}
-        <span className="text-xl text-gray-400">🛒</span>
+        <button
+          onClick={toggle}
+          className={`relative cursor-pointer rounded-full p-2 transition ${
+            overlay
+              ? "text-white/80 hover:bg-white/10 hover:text-white"
+              : "text-gray-700 hover:bg-gray-100 hover:text-blue-600"
+          }`}
+        >
+          <span className="text-xl">🛒</span>
+          {cartCount > 0 && (
+            <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
+              {cartCount}
+            </span>
+          )}
+        </button>
 
         {user ? (
           <div className="flex items-center gap-3">
@@ -68,7 +106,7 @@ function Navbar({ overlay }) {
                   : "bg-gray-100 text-gray-700"
               }`}
             >
-              {user.email}
+              {user.name}
             </div>
 
             {/* Logout */}

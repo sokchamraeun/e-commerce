@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import HeroSection from "../components/HeroSection";
 import Footer from "../components/Footer";
@@ -6,8 +7,31 @@ import Footer from "../components/Footer";
 const API = "http://127.0.0.1:8000/api/products";
 
 function Home() {
+  const { token } = useAuth();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
+
+  const addToCart = async (productId) => {
+    if (!token) {
+      setMessage("Please sign in to add items to cart");
+      return;
+    }
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ product_id: productId, quantity: 1 }),
+      });
+      if (!res.ok) throw new Error("Failed to add item");
+      setMessage("Added to cart!");
+    } catch {
+      setMessage("Failed to add to cart");
+    }
+  };
 
   useEffect(() => {
     fetch(API)
@@ -29,6 +53,12 @@ function Home() {
 
       <section className="px-4 py-12">
         <h2 className="mb-8 text-center text-3xl font-bold text-gray-800">Our Menu</h2>
+
+        {message && (
+          <div className="mx-auto mb-4 max-w-md rounded-lg bg-green-100 px-4 py-2 text-center text-sm text-green-600">
+            {message}
+          </div>
+        )}
 
         {loading && (
           <div className="flex justify-center py-10">
@@ -73,7 +103,10 @@ function Home() {
                     <span className="text-xl font-bold text-blue-600">
                       ${parseFloat(product.price).toFixed(2)}
                     </span>
-                    <button className="cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700">
+                    <button
+                      onClick={() => addToCart(product.id)}
+                      className="cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+                    >
                       Add to Cart
                     </button>
                   </div>

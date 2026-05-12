@@ -7,8 +7,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 import AdminLayout from "./layouts/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
+import MenuOrder from "./pages/admin/MenuOrder";
 import Orders from "./pages/admin/Orders";
 import Products from "./pages/admin/Products";
+import Reports from "./pages/admin/Reports";
 import Users from "./pages/customer/Users";
 import Home from "./pages/Home";
 import Menu from "./pages/customer/Menu";
@@ -40,7 +42,9 @@ function App() {
               <Route index element={<Dashboard />} />
               <Route path="users" element={<Users />} />
               <Route path="orders" element={<Orders />} />
+              <Route path="menu-order" element={<MenuOrder />} />
               <Route path="products" element={<Products />} />
+              <Route path="reports" element={<Reports />} />
             </Route>
           </Route>
         </Routes>

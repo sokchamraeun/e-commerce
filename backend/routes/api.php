@@ -34,8 +34,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders/{id}/payment-status', [OrderController::class, 'paymentStatus']);
     Route::post('/orders/{id}/regenerate-qr', [OrderController::class, 'regenerateQr']);
 
+    Route::post('/admin/orders/create', [OrderController::class, 'staffStore']);
     Route::get('/admin/orders', [OrderController::class, 'allOrders']);
     Route::get('/admin/orders/stats', [OrderController::class, 'stats']);
+    Route::get('/admin/orders/chart-data', [OrderController::class, 'chartData']);
+    Route::get('/admin/orders/report', [OrderController::class, 'report']);
+    Route::post('/admin/orders/{id}/print-log', [OrderController::class, 'storePrintLog']);
     Route::put('/admin/orders/{id}/status', [OrderController::class, 'updateStatus']);
 });
 

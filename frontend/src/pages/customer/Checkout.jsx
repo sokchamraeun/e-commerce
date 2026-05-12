@@ -13,12 +13,12 @@ function Checkout() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [pendingOrder, setPendingOrder] = useState(null);
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [qrDataUrl, setQrDataUrl] = useState("");
   const [qrExpired, setQrExpired] = useState(false);
   const [countdown, setCountdown] = useState(60);
   const pollingRef = useRef(null);
   const countdownRef = useRef(null);
+  const navigateRef = useRef(null);
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -84,6 +84,12 @@ function Checkout() {
     }
   };
 
+  const goHome = () => {
+    clearInterval(pollingRef.current);
+    clearInterval(countdownRef.current);
+    navigate("/", { replace: true });
+  };
+
   const handleConfirmPayment = async () => {
     setSubmitting(true);
     setError("");
@@ -93,8 +99,8 @@ function Checkout() {
         headers,
       });
       if (!res.ok) throw new Error("Payment failed");
-      setPaymentSuccess(true);
-      setTimeout(() => navigate("/", { replace: true }), 2000);
+      clearInterval(pollingRef.current);
+      goHome();
     } catch {
       setError("Payment confirmation failed. Please try again.");
       setSubmitting(false);
@@ -115,9 +121,7 @@ function Checkout() {
         const res = await fetch(`${API}/orders/${pendingOrder.id}/payment-status`, { headers });
         const data = await res.json();
         if (data.status === "paid") {
-          clearInterval(pollingRef.current);
-          setPaymentSuccess(true);
-          setTimeout(() => navigate("/", { replace: true }), 2000);
+          goHome();
         }
       } catch {
         // ignore polling errors
@@ -179,17 +183,12 @@ function Checkout() {
       <div className="mx-auto max-w-4xl px-4 py-8">
         <h1 className="mb-8 text-3xl font-bold text-white">Checkout</h1>
 
-        {paymentSuccess ? (
-          <div className="rounded-lg border border-green-700 bg-green-900/30 p-8 text-center">
-            <div className="text-6xl mb-4">✅</div>
-            <h2 className="text-2xl font-bold text-green-400 mb-2">Payment Successful!</h2>
-            <p className="text-gray-300">Redirecting to home page...</p>
-          </div>
-        ) : pendingOrder ? (
+        {pendingOrder ? (
           <div className="grid gap-8 lg:grid-cols-5">
             <div className="lg:col-span-3 space-y-6">
               <div className="rounded-lg border border-gray-700 bg-gray-800 p-6 text-center">
                 <h2 className="mb-4 text-lg font-semibold text-white">Scan to Pay</h2>
+                <p className="mb-3 text-xs text-gray-400">Scan with Wing, Bakong, or any banking app</p>
 
                 {qrExpired ? (
                   <div className="mx-auto flex h-48 w-48 items-center justify-center rounded-lg bg-gray-700 p-4">
@@ -211,7 +210,7 @@ function Checkout() {
                   Amount: ${parseFloat(pendingOrder.total_price).toFixed(2)}
                 </p>
 
-                {!qrExpired && !paymentSuccess && (
+                {!qrExpired && (
                   <p className="mt-2 text-sm text-gray-400">
                     QR expires in <span className="font-mono text-yellow-400">{countdown}s</span>
                   </p>
@@ -219,10 +218,6 @@ function Checkout() {
 
                 {qrExpired && (
                   <p className="mt-3 text-sm text-red-400">QR code expired. Please regenerate.</p>
-                )}
-
-                {!qrExpired && !paymentSuccess && (
-                  <p className="mt-1 text-xs text-gray-500">Scan with your banking app to pay</p>
                 )}
               </div>
 
@@ -327,8 +322,8 @@ function Checkout() {
                       className="h-4 w-4 accent-blue-500"
                     />
                     <div>
-                      <span className="font-medium text-white">KHQR</span>
-                      <p className="text-xs text-gray-400">Scan QR code to pay</p>
+                      <span className="font-medium text-white">KHQR / Wing Pay</span>
+                      <p className="text-xs text-gray-400">Scan QR code with any banking app</p>
                     </div>
                   </label>
                   <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-700 bg-gray-700/50 p-4 transition hover:bg-gray-700 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-900/20">
@@ -354,7 +349,9 @@ function Checkout() {
                   <div className="mx-auto flex h-48 w-48 items-center justify-center rounded-lg bg-white p-4">
                     <span className="text-6xl">🏦</span>
                   </div>
-                  <p className="mt-3 text-sm text-gray-400">Scan this QR code with your banking app</p>
+                  <p className="mt-3 text-sm text-gray-400">
+                    Scan with Wing, Bakong, ABA or any banking app
+                  </p>
                 </div>
               )}
 

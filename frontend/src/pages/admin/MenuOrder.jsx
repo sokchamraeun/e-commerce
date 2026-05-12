@@ -170,6 +170,7 @@ function MenuOrder() {
               ) : (
                 <>
                   <p className="mb-2 text-sm font-semibold text-gray-700">Scan to Pay</p>
+                  <p className="mb-3 text-xs text-gray-400">Scan with Wing, Bakong, or any banking app</p>
                   <p className="mb-2 text-lg font-bold text-gray-800">${parseFloat(pendingOrder.total_price).toFixed(2)}</p>
                   {qrDataUrl ? (
                     <img src={qrDataUrl} alt="QR Code" className="mx-auto rounded-lg" />
@@ -197,7 +198,7 @@ function MenuOrder() {
                 <input type="text" name="phone" placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500" />
                 <select name="payment_method" value={form.payment_method} onChange={(e) => setForm({ ...form, payment_method: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500">
                   <option value="cash">Cash</option>
-                  <option value="khqr">KHQR</option>
+                  <option value="khqr">KHQR / Wing Pay</option>
                 </select>
                 <button type="submit" disabled={submitting} className="w-full cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50">
                   {submitting ? "Placing..." : "Place Order"}

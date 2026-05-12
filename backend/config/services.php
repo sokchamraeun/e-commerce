@@ -35,6 +35,12 @@ return [
         ],
     ],
 
+    'wing' => [
+        'api_key' => env('WING_API_KEY'),
+        'base_url' => env('WING_BASE_URL', 'https://wing-money.bongloy.com/api/v1'),
+        'store_account' => env('WING_STORE_ACCOUNT'),
+    ],
+
     'bakong' => [
         'token' => env('BAKONG_API_TOKEN'),
         'bakong_id' => env('BAKONG_ACCOUNT_ID'),
